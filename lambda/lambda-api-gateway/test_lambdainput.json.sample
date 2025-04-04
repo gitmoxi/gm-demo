@@ -1,0 +1,9 @@
+{
+  "ref" : {
+    "file" : ["lambda/core-infra/terraform/terraform_output.json"],
+    "type" : "TERRAFORM"
+  },
+  "cloudwatch_log_group_region": "us-east-1",
+  "cluster_region": "us-east-1",
+  "cluster_account": "593793058131"
+}

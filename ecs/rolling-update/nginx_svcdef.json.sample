@@ -1,0 +1,16 @@
+{
+  "cluster": "{{ cluster_name }}",
+  "serviceName": "rolling-nginx-svc",
+  "desiredCount": 2,
+  "deploymentController": {
+    "type": "ECS"
+  },
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": {{ public_subnets | tojson }},
+      "assignPublicIp": "ENABLED",
+      "securityGroups": {{ allow_web_security_group_ids | tojson }}
+    }
+  },
+  "launchType": "FARGATE"
+}
