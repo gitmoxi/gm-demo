@@ -1,0 +1,10 @@
+{
+  "PullEventSources": {
+    "EventSourceMapping": {
+      "EventSourceArn": "{{ sqs_queue_arn }}",
+      "FunctionName": "LambdaFunction_SQS",
+      "BatchSize": 10,
+      "MaximumBatchingWindowInSeconds": 60
+    }
+  }
+}

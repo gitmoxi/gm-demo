@@ -1,0 +1,15 @@
+{
+  "FunctionName": "LambdaFunction_ELB",
+  "Role": "{{ lambda_exec_role_arn }}",
+  "Handler": "test_lambda_function.lambda_handler",
+  "Runtime": "python3.8",
+  "Code": {
+    "S3Bucket": "{{ s3_bucket_name }}",
+    "S3Key": "{{ s3_object_blue_key }}"
+  },
+  "Description": "This is a test Lambda function.",
+  "Timeout": 15,
+  "MemorySize": 128,
+  "Publish": true,
+  "PackageType": "Zip"
+}
