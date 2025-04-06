@@ -3,5 +3,5 @@
         "file" : ["ecs/core-infra/terraform/terraform_output.json"],
         "type" : "TERRAFORM"
     },
-    "nginx_container_image": "public.ecr.aws/nginx/nginx:latest"
+    "nginx_container_image":"public.ecr.aws/docker/library/httpd:alpine3.20" 
 }
