@@ -1,0 +1,29 @@
+{
+  "cluster": "{{ cluster_name }}",
+  "serviceName": "bg-nginx-svc",
+  "desiredCount": 3,
+  "deploymentController": {
+    "type": "EXTERNAL"
+  },
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": {{ private_subnets | tojson }},
+      "assignPublicIp": "DISABLED",
+      "securityGroups": {{ allow_web_security_group_ids | tojson }}
+    }
+  },
+  "loadBalancers": [
+    {
+      "targetGroupArn": "{{ target_group_arns['blue-tg'] }}",
+      "containerPort": 80,
+      "containerName": "nginx-container"
+    }
+  ],
+  "capacityProviderStrategy": [
+    {
+      "capacityProvider": "FARGATE_SPOT",
+      "weight": 1
+    }
+  ] 
+}
+
