@@ -1,0 +1,8 @@
+{
+  "PushEventSources": [
+    {
+      "Service": "elasticloadbalancing.amazonaws.com",
+      "TargetGroupArn": "{{ target_group_arn }}"
+    }
+  ]
+}

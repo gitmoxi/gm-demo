@@ -1,0 +1,31 @@
+{
+    "trafficShiftingConfig": {
+        "percent": 20,
+        "waitInterval": 10,
+        "type" : "LINEAR"
+    },
+    "targetGroupArnPairs": [
+        [
+            {% for tg_arn in target_group_arns.values() %}
+            "{{ tg_arn }}"{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]
+    ],
+    "stabilityCheck": {
+        "timeoutPerTask" : 10,
+        "timeout" : 150
+    },
+    "gmDeploymentCircuitBreaker": {
+        "rollback": true,
+        "failureThresholdPercent": 25
+    },
+    "fallbackCapacityProviderStrategy": [
+        {
+          "capacityProvider": "FARGATE",
+          "weight": 1
+        }
+    ],
+    "environment": {
+        "region" : "{{region}}"
+    }
+}

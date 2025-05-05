@@ -1,0 +1,10 @@
+{
+  "PushEventSources": [
+    {
+      "Service": "apigateway.amazonaws.com",
+      "ApiId": "{{ api_id }}",
+      "RouteId": "{{ route_id }}",
+      "AlaisStageVariableName": "lambdaAlias"
+    }
+  ]
+}

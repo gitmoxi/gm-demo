@@ -1,0 +1,16 @@
+kind: DeploymentDefinition
+metadata:
+  name: test-app
+spec:
+  trafficShiftingConfig:
+    percent: 30
+    waitInterval: 5
+    type: LINEAR
+  rollback: true
+  deleteOldVersion: true
+  readinessCheck:
+    waitInterval: 15
+    maxRetries: 5
+  controllerType: alb
+  environment:
+    clusterArn: CLUSTER_ARN
