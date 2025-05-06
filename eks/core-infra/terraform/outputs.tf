@@ -1,12 +1,9 @@
 output "cluster_arn" {
-  value = aws_eks_cluster.this.arn
+  description = "EKS cluster ARN"
+  value       = aws_eks_cluster.this.arn
 }
 
 output "cluster_name" {
-  value = aws_eks_cluster.this.name
+  description = "Name of the EKS cluster"
+  value       = aws_eks_cluster.this.name
 }
-
-output "kubeconfig" {
-  value = aws_eks_cluster.this.endpoint
-}
-

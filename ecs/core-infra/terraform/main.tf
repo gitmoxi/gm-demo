@@ -5,13 +5,13 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "gitmoxidemo"
-  region = "us-west-2"
+  name                      = "gitmoxidemo"
+  region                    = "us-west-2"
   cloudwatch_log_group_name = "/gitmoxidemo/ecs/nginx"
-  log_retention_in_days = 1
+  log_retention_in_days     = 1
 
   task_execution_role_name = "GitmoxiTaskExecutionRole"
-  
+
   app_port = 80
 
   security_groups = [
@@ -83,29 +83,29 @@ module "vpc" {
 ################################################################################
 
 resource "aws_security_group" "allow_web" {
-    for_each = { for sg in local.security_groups : sg.name => sg }
+  for_each = { for sg in local.security_groups : sg.name => sg }
 
-    name        = each.value.name
-    description = each.value.description
-    vpc_id      = module.vpc.vpc_id
+  name        = each.value.name
+  description = each.value.description
+  vpc_id      = module.vpc.vpc_id
 
-    ingress {
-        from_port   = each.value.app_port
-        to_port     = each.value.app_port
-        protocol    = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+  ingress {
+    from_port   = each.value.app_port
+    to_port     = each.value.app_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-    egress {
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-    tags = {
-        Name = each.value.name
-    }
+  tags = {
+    Name = each.value.name
+  }
 }
 
 ################################################################################
@@ -115,7 +115,7 @@ resource "aws_security_group" "allow_web" {
 resource "aws_cloudwatch_log_group" "cloudwatch_log_group" {
   name              = local.cloudwatch_log_group_name
   retention_in_days = local.log_retention_in_days
-  tags = local.tags
+  tags              = local.tags
 }
 
 ################################################################################
@@ -123,27 +123,27 @@ resource "aws_cloudwatch_log_group" "cloudwatch_log_group" {
 ################################################################################
 
 resource "aws_iam_role" "task_execution_role" {
-    name = local.task_execution_role_name
+  name = local.task_execution_role_name
 
-    assume_role_policy = jsonencode({
-        Version = "2012-10-17"
-        Statement = [
-            {
-                Action = "sts:AssumeRole"
-                Principal = {
-                    Service = "ecs-tasks.amazonaws.com"
-                }
-                Effect = "Allow"
-                Sid    = ""
-            },
-        ]
-    })
-    tags = local.tags
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Effect = "Allow"
+        Sid    = ""
+      },
+    ]
+  })
+  tags = local.tags
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
-    role       = aws_iam_role.task_execution_role.name
-    policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role       = aws_iam_role.task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 ################################################################################
@@ -187,12 +187,12 @@ module "alb" {
       weighted_forward = {
         target_groups = [
           {
-            target_group_key =  "blue-tg"
-            weight = 1
+            target_group_key = "blue-tg"
+            weight           = 1
           },
           {
             target_group_key = "green-tg"
-            weight = 0
+            weight           = 0
           }
         ]
       }
@@ -201,7 +201,7 @@ module "alb" {
 
   target_groups = {
     blue-tg = {
-      name = "blue-tg"
+      name             = "blue-tg"
       backend_protocol = "HTTP"
       backend_port     = local.app_port
       target_type      = "ip"
@@ -223,7 +223,7 @@ module "alb" {
       create_attachment = false
     }
     green-tg = {
-      name = "green-tg"
+      name             = "green-tg"
       backend_protocol = "HTTP"
       backend_port     = local.app_port
       target_type      = "ip"

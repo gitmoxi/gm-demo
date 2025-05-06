@@ -4,7 +4,8 @@
 ################################################################################
 
 output "region" {
-  value = local.region
+  description = "The AWS region"
+  value       = local.region
 }
 
 ################################################################################
@@ -79,7 +80,7 @@ output "cluster_name" {
 
 output "cloudwatch_log_group_name" {
   description = "Cloudwatch log group name"
-  value = aws_cloudwatch_log_group.cloudwatch_log_group.name
+  value       = aws_cloudwatch_log_group.cloudwatch_log_group.name
 }
 
 ################################################################################
@@ -90,4 +91,3 @@ output "task_execution_role_arn" {
   description = "The ARN of the Task Execution IAM Role"
   value       = aws_iam_role.task_execution_role.arn
 }
-
