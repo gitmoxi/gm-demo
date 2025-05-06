@@ -24,6 +24,5 @@
       "capacityProvider": "FARGATE_SPOT",
       "weight": 1
     }
-  ] 
+  ]
 }
-

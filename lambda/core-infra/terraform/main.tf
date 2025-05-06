@@ -6,23 +6,13 @@ provider "aws" {
 # Locals and Variables
 ################################################################################
 
-variable "region" {
-  type        = string
-  default     = "us-east-1"
-}
-
-variable "lambdaAlias" {
-  type        = string
-  default     = "PROD"
-}
-
 locals {
-  api_name         = "example-api"
-  lambda_role_name = "TestLambdaExecutionRole"
+  api_name              = "example-api"
+  lambda_role_name      = "TestLambdaExecutionRole"
   blue_lambda_zip_file  = "blue_function.zip"
-  green_lambda_zip_file  = "green_function.zip"
-  sqs_lambda_zip_file  = "sqs_function.zip"
-  lambda_runtime   = "python3.8"
+  green_lambda_zip_file = "green_function.zip"
+  sqs_lambda_zip_file   = "sqs_function.zip"
+
   tags = {
     Project = "GitMoxi"
     Owner   = "User"
@@ -40,8 +30,8 @@ resource "aws_iam_role" "lambda_exec" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
         Principal = {
           Service = "lambda.amazonaws.com"
         }
@@ -63,8 +53,8 @@ resource "aws_iam_policy" "sqs_lambda_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "sqs:ReceiveMessage",
           "sqs:DeleteMessage",
           "sqs:GetQueueAttributes"
@@ -138,7 +128,7 @@ resource "aws_apigatewayv2_stage" "default_stage" {
   auto_deploy = true
 
   stage_variables = {
-    lambdaAlias = var.lambdaAlias
+    lambdaAlias = var.lambda_alias
   }
 
   tags = local.tags
@@ -250,7 +240,7 @@ resource "aws_lb" "default" {
 resource "aws_lb_listener" "default" {
   load_balancer_arn = aws_lb.default.arn
   protocol          = "HTTP"
-  port = 80
+  port              = 80
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.default.arn

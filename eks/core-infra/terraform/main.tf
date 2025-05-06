@@ -66,7 +66,7 @@ resource "aws_eks_cluster" "this" {
   version  = "1.29"
 
   vpc_config {
-    subnet_ids = concat(module.vpc.private_subnets, module.vpc.public_subnets)
+    subnet_ids              = concat(module.vpc.private_subnets, module.vpc.public_subnets)
     endpoint_private_access = true
     endpoint_public_access  = true
   }
@@ -97,7 +97,7 @@ resource "aws_iam_role" "eks_node_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "worker_node_AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "worker_node_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.eks_node_role.name
 }
@@ -131,7 +131,7 @@ resource "aws_eks_node_group" "default" {
   instance_types = ["t3.small"]
 
   depends_on = [
-    aws_iam_role_policy_attachment.worker_node_AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.worker_node_policy,
     aws_iam_role_policy_attachment.cni_policy,
     aws_iam_role_policy_attachment.ecr_read_only
   ]
@@ -142,12 +142,12 @@ resource "aws_eks_node_group" "default" {
 ################################################################################
 
 data "aws_eks_cluster" "this" {
-  name = aws_eks_cluster.this.name
+  name       = aws_eks_cluster.this.name
   depends_on = [aws_eks_cluster.this]
 }
 
 data "tls_certificate" "eks" {
-  url = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
+  url        = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
   depends_on = [data.aws_eks_cluster.this]
 }
 
@@ -155,7 +155,7 @@ resource "aws_iam_openid_connect_provider" "this" {
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
   url             = data.aws_eks_cluster.this.identity[0].oidc[0].issuer
-  depends_on = [data.tls_certificate.eks]
+  depends_on      = [data.tls_certificate.eks]
 }
 
 ################################################################################
@@ -176,7 +176,7 @@ module "alb_irsa" {
   }
 
   attach_load_balancer_controller_policy = true
-  depends_on = [aws_iam_openid_connect_provider.this]
+  depends_on                             = [aws_iam_openid_connect_provider.this]
 }
 
 ################################################################################
@@ -191,8 +191,8 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
       "eks.amazonaws.com/role-arn" = module.alb_irsa.iam_role_arn
     }
     labels = {
-      "app.kubernetes.io/name"       = "aws-load-balancer-controller"
-      "app.kubernetes.io/component"  = "controller"
+      "app.kubernetes.io/name"      = "aws-load-balancer-controller"
+      "app.kubernetes.io/component" = "controller"
     }
   }
   depends_on = [
@@ -236,12 +236,12 @@ resource "aws_security_group" "alb_http" {
 ################################################################################
 
 resource "time_sleep" "wait_for_nodes" {
-  depends_on = [aws_eks_node_group.default]
+  depends_on      = [aws_eks_node_group.default]
   create_duration = "120s"
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = aws_eks_cluster.this.name
+  name       = aws_eks_cluster.this.name
   depends_on = [aws_eks_cluster.this]
 }
 
@@ -269,7 +269,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   repository = "https://aws.github.io/eks-charts"
   namespace  = "kube-system"
   version    = "1.7.1"
-  timeout    = 900  # Increased timeout (15 minutes) to avoid deadline exceeded
+  timeout    = 900 # Increased timeout (15 minutes) to avoid deadline exceeded
 
   set {
     name  = "clusterName"
